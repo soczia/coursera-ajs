@@ -29,7 +29,7 @@
              <button class="btn btn-default"
                      ng-click="checkLunch()">Check If Too Much</button>
          </div>
-         <div class="form-group message">
+         <div class="form-group message" ng-class="{'text-success': in==true, 'text-warning': in==='', 'text-danger': in=='false'}">
          {{message}}
          </span>
          </div>
