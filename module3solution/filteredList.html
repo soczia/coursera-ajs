@@ -1,9 +1,10 @@
-<h3>Title: {{ list.myTitle }}</h3>
 <ol>
-  <li ng-repeat="item in list.filteredItems">
-    {{ item.quantity }} of {{ item.name }}
-    <!-- <button ng-click="list.badRemove($index);">Bad Remove Item</button> -->
-    <button ng-click="list.onRemove({index: $index});">Remove Item</button>
-  </li>
+  <span ng-repeat="item in list.filteredItems">
+    {{item.short_name}} - {{ item.name }}
+    <button ng-click="list.onRemove({index: $index});">Don't want this one</button>
+    <div class="text-info">
+    {{item.description}}
+  </div>
+</span>
+<div class="text-error" ng-if="list.filteredItems.length == 0">Nothing found</div>
 </ol>
-<!-- <div class="error" ng-if="list.cookiesInList()">WARNING! WARNING! COOKIES DETECTED!</div> -->

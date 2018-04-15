@@ -4,7 +4,7 @@
   angular.module('NarrowItDownApp', [])
   .controller('NarrowItDownController', NarrowItDownController)
   .service('MenuSearchService', MenuSearchService)
-  .directive('filteredItems', MenuSearchDirective)
+  .directive('foundItems', MenuSearchDirective)
   .constant('ApiBasePath', "https://davids-restaurant.herokuapp.com");
 
   MenuSearchService.$inject = ['$http', 'ApiBasePath'];
@@ -18,41 +18,26 @@
         url: (ApiBasePath + "/menu_items.json"),
       }).then( function (result) {
         var foundItems = result.data.menu_items
-        .filter( element => element.description.includes(searchTerm));
-       //  var first = foundItems.filter( element => element.description.includes(searchTerm));
-        console.log(foundItems);
-       //  console.log(first);
-       // var first = foundItems.filter( function (item) {
-       //  return item.description.includes(searchTerm)
-       // });
-       //  console.log(first);
-       //  var first = foundItems.filter( function (item) {
-       //   return item.name.length > 10;
-       //  });
-       //   console.log(first);
-       //  console.log(result);
-       //
-       //  var desc = foundItems[0].description;
-       //  console.log(desc);
-       //  console.log(searchTerm);
-       //  console.log(desc.toLowerCase().indexOf(searchTerm !== -1));
+        .filter( element => element.description.toLowerCase().includes(searchTerm.toLowerCase()));
+
        return foundItems;
       });
 
     };
+
   };
 
 NarrowItDownController.$inject = ['MenuSearchService'];
   function NarrowItDownController(MenuSearchService) {
     var list = this;
     list.searchTerm = "";
-    list.filteredItems = "";
+    list.foundItems = "";
 
     list.found = function (searchTerm) {
         var promise = MenuSearchService.getMatchedMenuItems(searchTerm);
-        console.log(promise);
+
         promise.then(function (response) {
-          list.filteredItems = response;
+          list.foundItems = response;
           console.log(response);
         })
         .catch(function (error) {
@@ -62,16 +47,9 @@ NarrowItDownController.$inject = ['MenuSearchService'];
 
     list.removeItem = function (itemIndex) {
       console.log("'this' is: ", this);
-      this.lastRemoved = "Last item removed was " + this.items[itemIndex].name;
-      shoppingList.removeItem(itemIndex);
-      this.title = origTitle + " (" + list.items.length + " items )";
+      list.foundItems.splice(itemIndex, 1);
     };
 
-    // list.found = function (searchTerm)
-    // {
-    //   var result =  MenuSearchService.getMatchedMenuItems(searchTerm);
-    //   console.log(result);
-    // };
 }
 
 function MenuSearchDirective() {
@@ -79,16 +57,19 @@ function MenuSearchDirective() {
     templateUrl: 'filteredList.html',
     scope: {
       filteredItems: '<',
-      // myTitle: '@title',
       onRemove: '&'
     },
-    // controller: ShoppingListDirectiveController,
-     controllerAs: 'list',
-     bindToController: true,
-    // link: ShoppingListDirectiveLink
+   controller: MenuSearchDirectiveController,
+   controllerAs: 'list',
+   transclude: true,
+   bindToController: true
   };
 
   return ddo;
+}
+
+function MenuSearchDirectiveController() {
+  var list = this;
 }
 
 
