@@ -34,6 +34,8 @@ NarrowItDownController.$inject = ['MenuSearchService'];
     list.foundItems = "";
 
     list.found = function (searchTerm) {
+        if (searchTerm.trim().length > 0 )
+        {
         var promise = MenuSearchService.getMatchedMenuItems(searchTerm);
 
         promise.then(function (response) {
@@ -43,6 +45,10 @@ NarrowItDownController.$inject = ['MenuSearchService'];
         .catch(function (error) {
           console.log(error);
         })
+        }
+        else {
+          list.foundItems = "";
+        }
       };
 
     list.removeItem = function (itemIndex) {
@@ -61,7 +67,7 @@ function MenuSearchDirective() {
     },
    controller: MenuSearchDirectiveController,
    controllerAs: 'list',
-   transclude: true,
+//   transclude: true,
    bindToController: true
   };
 
